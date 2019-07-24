@@ -31,6 +31,16 @@ public class TestController {
         BigInteger blockNumber = web3j.getBlockNumber().send().getBlockNumber();
         log.info("blockNumber is {}", blockNumber);
         assertTrue(blockNumber.compareTo(new BigInteger("0")) >= 0);
+
+        BigInteger pbft = web3j.getPbftView().send().getPbftView();
+        String pdftStr = pbft.toString();
+
+        log.info("pbftView is {}", pdftStr);
+
+        String version = web3j.getNodeVersion().send().getNodeVersion().getVersion();
+
+        log.info("version is {}", version);
+
         return JsonData.success("123");
     }
 
