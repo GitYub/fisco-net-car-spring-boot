@@ -4,33 +4,34 @@ import lombok.*;
 
 import javax.persistence.*;
 
+/**
+ * @author ginyu
+ * @date 2019-07-25 23:07
+ **/
 @Entity
-@Table(name = "tb_user")
+@Table(name = "tb_driver")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
 @Builder
-public class UserEntity {
+public class DriverEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column
-    private String privateKey;
+    @Column(name = "user_id")
+    private long userId;
 
     @Column
-    private String username;
+    private long platform;
 
     @Column
-    private String phoneNumber;
+    private int star;
 
     @Column
-    private String password;
-
-    @Column
-    private int role;
+    private int miles;
 
 }
