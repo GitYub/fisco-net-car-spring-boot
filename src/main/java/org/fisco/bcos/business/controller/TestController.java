@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.fisco.bcos.BAC001;
 import org.fisco.bcos.business.util.JsonData;
 import org.fisco.bcos.web3j.crypto.Credentials;
+import org.fisco.bcos.web3j.crypto.Keys;
 import org.fisco.bcos.web3j.protocol.Web3j;
 import org.fisco.bcos.web3j.tx.gas.ContractGasProvider;
 import org.fisco.bcos.web3j.tx.gas.StaticGasProvider;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
 import java.math.BigInteger;
 
 import static org.junit.Assert.assertTrue;
@@ -25,8 +25,6 @@ public class TestController {
 
     private Web3j web3j;
 
-
-
     @Autowired
     TestController(Web3j web3j) {
         this.web3j = web3j;
@@ -34,7 +32,7 @@ public class TestController {
 
     @GetMapping("/string")
     public JsonData test() throws Exception {
-        log.info("test");
+        log.info(">>>>>>>>>>>>>test");
         BigInteger blockNumber = web3j.getBlockNumber().send().getBlockNumber();
         log.info("blockNumber is {}", blockNumber);
         assertTrue(blockNumber.compareTo(new BigInteger("0")) >= 0);
@@ -53,12 +51,14 @@ public class TestController {
 
     @PostMapping("/deploy")
     public JsonData deploy() throws Exception {
+        log.info(">>>>>>>>>>>>deploy");
 
         BigInteger gasPrice = new BigInteger("1");
         BigInteger gasLimit = new BigInteger("210000000");
 
         ContractGasProvider contractGasProvider = new StaticGasProvider(gasPrice, gasLimit);
         Credentials credentials = Credentials.create("123456");
+        Credentials.create(Keys.createEcKeyPair());
 
         String description = "fisco net car integration";
         String shortName = "integration";
