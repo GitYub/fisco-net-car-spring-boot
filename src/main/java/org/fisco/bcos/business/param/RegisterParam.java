@@ -10,6 +10,6 @@ import lombok.*;
 @Builder
 public class RegisterParam {
 
-
+    private String username;
 
 }
