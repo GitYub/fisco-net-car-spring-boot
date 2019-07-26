@@ -30,4 +30,12 @@ public class DriverController {
         return JsonData.success();
     }
 
+    @PostMapping("/item")
+    public JsonData buyItem() {
+        log.info(">>>>>>buy item");
+
+
+        return JsonData.success();
+    }
+
 }

@@ -12,6 +12,7 @@ import org.fisco.bcos.web3j.protocol.Web3j;
 import org.fisco.bcos.web3j.tx.gas.ContractGasProvider;
 import org.fisco.bcos.web3j.tx.gas.StaticGasProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,6 +40,14 @@ public class DeployController {
 
         deployService.deploy();
         return JsonData.success("deploy success");
+    }
+
+    @GetMapping("/totalAccount")
+    public JsonData getTotalAccount() throws Exception {
+        log.info(">>>>>>>>>>>>getTotalAccount");
+
+        deployService.deploy();
+        return JsonData.success("getTotalAccount success");
     }
 
     @PostMapping("/platform")

@@ -6,4 +6,6 @@ public interface DriverService {
 
     void finishOrder(DriverParam param) throws Exception;
 
+    void buyItem();
+
 }
