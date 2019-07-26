@@ -18,13 +18,13 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column
+    @Column(name = "private_key")
     private String privateKey;
 
     @Column
     private String username;
 
-    @Column
+    @Column(name = "phone_number")
     private String phoneNumber;
 
     @Column
