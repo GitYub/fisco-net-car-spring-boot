@@ -40,11 +40,15 @@ public class UserServiceImpl implements UserService {
         userEntity.setPassword(param.getPassword());
         userEntity.setPhoneNumber(param.getPhoneNumber());  //是否做已存在校验？
         userEntity.setRole(2);  //0为商城，1为网约车平台，2为司机，默认为2
+        Credentials userCredentials;
         try {
-            userEntity.setPrivateKey(Credentials.create(Keys.createEcKeyPair()).getEcKeyPair().getPrivateKey().toString(16));
+            userCredentials = Credentials.create(Keys.createEcKeyPair());
+
         } catch (Exception e) {
-            throw  new ExistException("私钥创建失败");
+            throw  new ExistException("证书创建失败");
         }
+        userEntity.setPrivateKey(userCredentials.getEcKeyPair().getPrivateKey().toString(16));
+        userEntity.setAddress(userCredentials.getAddress());
         userRepository.save(userEntity);    //用户注册信息执行
         log.info("用户注册成功：" + userEntity.getUsername());
 
