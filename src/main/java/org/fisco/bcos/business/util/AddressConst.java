@@ -9,6 +9,6 @@ public class AddressConst {
 
     public static String BAC001_CONTRACT_ADDRESS = "0xf9343346a8d80c3d2f2026bf72fff3aec48a4133";
 
-    public static String BAC002_CONTRACT_ADDRESS = "0xf9343346a8d80c3d2f2026bf72fff3aec48a4133";
+    public static String BAC002_CONTRACT_ADDRESS = "0xad32aa6ae1b71bdfaf35539cdb4d0851647ca1cd";
 
 }

@@ -1,5 +1,10 @@
 package org.fisco.bcos;
 
+import lombok.extern.slf4j.Slf4j;
+import org.fisco.bcos.business.service.DeployService;
+import org.fisco.bcos.business.service.FiscoService;
+import org.fisco.bcos.business.util.AddressConst;
+import org.fisco.bcos.business.util.ReadFile;
 import org.fisco.bcos.web3j.crypto.Credentials;
 import org.fisco.bcos.web3j.protocol.Web3j;
 import org.fisco.bcos.web3j.tx.gas.ContractGasProvider;
@@ -9,16 +14,37 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigInteger;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
+@Slf4j
 public class BACTest extends BaseTest {
 
     @Autowired
     private Web3j web3j;
 
-    @Test
-    public void otherContract() {
+    @Autowired
+    private FiscoService fiscoService;
 
+    @Autowired
+    private DeployService deployService;
+
+    @Test
+    public void testBAC002Send() {
+        String[] a = ReadFile.toArrayByRandomAccessFile("classpath:车牌.txt");
+        for (String b : a) {
+            System.out.println(b);
+        }
+    }
+
+    @Test
+    public void testBAC002() throws Exception {
+        Credentials credentials = Credentials.create("a2f393834219dbc85005929fe4e10c2252cd4771aeea9a5b052442dfa72e57bb");
+        String addressTo = "0xe6019660ee4d811be0fec70244866416dfca1945";
+        fiscoService.issueWithAssetURI(credentials, addressTo, BigInteger.ONE, "粤A12345", "发行商给用户34一块车牌");
+
+        BAC002 bac002Bob = BAC002.load(AddressConst.BAC002_CONTRACT_ADDRESS, web3j, credentials, fiscoService.getGasProvider());
+        System.out.println(bac002Bob.getContractAddress());
+
+        System.out.println(bac002Bob.balance(addressTo).send().toString());
+        System.out.println(bac002Bob.ownerOf(BigInteger.ONE).send());
     }
 
     @Test
@@ -58,8 +84,6 @@ public class BACTest extends BaseTest {
         org.fisco.bcos.BAC001 bac001Bob = org.fisco.bcos.BAC001.load(contractAddress,web3j,credentialsBob,contractGasProvider);
         bac001Bob.safeSendFrom(Owner,Alice,new BigInteger("10000"),"dddd").send();
 //查询余额
-        assertEquals( bac001.balance(Alice).send().toString(),"30000");
-        assertEquals( bac001.balance(Owner).send().toString(),"9970000");
     }
 
 

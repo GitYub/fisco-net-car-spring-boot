@@ -25,20 +25,20 @@ public class DeployController {
         this.deployService = deployService;
     }
 
-    @PostMapping("/deploy")
-    public JsonData deploy() throws Exception {
-        log.info(">>>>>>>>>>>>deploy");
+    @PostMapping("/deployBAC001")
+    public JsonData deployBAC001() throws Exception {
+        log.info(">>>>>>>>>>>>deployBAC001");
 
-        deployService.deploy();
+        deployService.deployBAC001();
         return JsonData.success("deploy success");
     }
 
-    @GetMapping("/totalAccount")
-    public JsonData getTotalAccount() throws Exception {
-        log.info(">>>>>>>>>>>>getTotalAccount");
+    @PostMapping("/deployBAC002")
+    public JsonData deployBAC002() throws Exception {
+        log.info(">>>>>>>>>>>>deployBAC002");
 
-        deployService.deploy();
-        return JsonData.success("getTotalAccount success");
+        deployService.deployBAC002();
+        return JsonData.success("deploy success");
     }
 
     @PostMapping("/platform")
@@ -47,6 +47,14 @@ public class DeployController {
 
         deployService.registerPlatform(param);
         return JsonData.success("register platform success");
+    }
+
+    @PostMapping("/license")
+    public JsonData license2Chain(long userId) throws Exception {
+        log.info(">>>>>>>license2Chain");
+
+        deployService.license2Chain(userId);
+        return JsonData.success("license to chain success");
     }
 
     @PostMapping("/send")

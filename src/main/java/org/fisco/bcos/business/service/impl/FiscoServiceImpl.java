@@ -3,6 +3,7 @@ package org.fisco.bcos.business.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.fisco.bcos.BAC001;
 import org.fisco.bcos.BAC002;
+import org.fisco.bcos.business.dto.PublisherInfoDTO;
 import org.fisco.bcos.business.service.FiscoService;
 import org.fisco.bcos.business.util.AddressConst;
 import org.fisco.bcos.web3j.crypto.Credentials;
@@ -66,6 +67,59 @@ public class FiscoServiceImpl implements FiscoService {
     }
 
     @Override
+    public PublisherInfoDTO deployBAC001(Credentials credentials, String description, String shortName,
+                                         BigInteger minAmount, BigInteger maxAmount) throws Exception {
+        log.info(">>>>>>>>deploy bac001");
+
+        BAC001 bac001 = BAC001.deploy(web3j, credentials, getGasProvider(),
+                description, shortName, minAmount, maxAmount).send();
+
+        PublisherInfoDTO publisherInfoDTO = PublisherInfoDTO.builder()
+                .publicKey(credentials.getEcKeyPair().getPublicKey().toString(16))
+                .address(credentials.getAddress())
+                .privateKey(credentials.getEcKeyPair().getPrivateKey().toString(16))
+                .contractAddress(bac001.getContractAddress())
+                .build();
+
+        AddressConst.BAC001_CONTRACT_ADDRESS = publisherInfoDTO.getContractAddress();
+
+        BigInteger totalAmount = bac001.totalAmount().send().abs();
+
+        log.info("BAC001发行总量为: {}", totalAmount);
+        log.info("BAC001发行商地址: {}", publisherInfoDTO.getAddress());
+        log.info("BAC001发行商公钥 is : {}", publisherInfoDTO.getPublicKey());
+        log.info("BAC001发行商私钥 is : {}", publisherInfoDTO.getPrivateKey());
+        log.info("BAC001合约地址：{}", publisherInfoDTO.getContractAddress());
+
+        return publisherInfoDTO;
+
+    }
+
+    @Override
+    public PublisherInfoDTO deployBAC002(Credentials credentials, String description, String shortName) throws Exception {
+        log.info(">>>>>>>>deploy bac002");
+
+        BAC002 bac002 = BAC002.deploy(web3j, credentials, getGasProvider(), description, shortName).send();
+
+        log.info("BAC002资产发行成功");
+
+        PublisherInfoDTO publisherInfoDTO = PublisherInfoDTO.builder()
+                .address(credentials.getAddress())
+                .contractAddress(bac002.getContractAddress())
+                .privateKey(credentials.getEcKeyPair().getPrivateKey().toString(16))
+                .publicKey(credentials.getEcKeyPair().getPublicKey().toString(16))
+                .build();
+
+        log.info("BAC002合约地址：{}", publisherInfoDTO.getContractAddress());
+        log.info("BAC002发行商地址：{}", publisherInfoDTO.getAddress());
+        log.info("BAC002发行商公钥：{}", publisherInfoDTO.getPublicKey());
+        log.info("BAC002发行商私钥：{}", publisherInfoDTO.getPrivateKey());
+
+        return publisherInfoDTO;
+
+    }
+
+    @Override
     public void issueWithAssetURI(Credentials credentials, String addressTo,
                                   BigInteger value, String description, String data) throws Exception {
         log.info(">>>>>>issueWithAssetURI");
@@ -73,9 +127,12 @@ public class FiscoServiceImpl implements FiscoService {
         BAC002 bac002 = BAC002.load(AddressConst.BAC002_CONTRACT_ADDRESS, web3j, credentials ,getGasProvider());
         bac002.issueWithAssetURI(addressTo, value, description, data.getBytes()).send();
 
+        log.info("{}的资产：{}上链成功，资产id为：{}", addressTo, description, value);
+
     }
 
-    private ContractGasProvider getGasProvider() {
+    @Override
+    public ContractGasProvider getGasProvider() {
         BigInteger gasPrice = new BigInteger("1");
         BigInteger gasLimit = new BigInteger("210000000");
         return new StaticGasProvider(gasPrice, gasLimit);

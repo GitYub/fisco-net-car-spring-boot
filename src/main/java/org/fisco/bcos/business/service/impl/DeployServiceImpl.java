@@ -2,12 +2,16 @@ package org.fisco.bcos.business.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.fisco.bcos.BAC001;
+import org.fisco.bcos.business.dto.PublisherInfoDTO;
+import org.fisco.bcos.business.entity.LicenseEntity;
 import org.fisco.bcos.business.entity.UserEntity;
 import org.fisco.bcos.business.param.PlatformRegisterParam;
+import org.fisco.bcos.business.repository.LicenseRepository;
 import org.fisco.bcos.business.repository.UserRepository;
 import org.fisco.bcos.business.service.DeployService;
 import org.fisco.bcos.business.service.FiscoService;
 import org.fisco.bcos.business.util.AddressConst;
+import org.fisco.bcos.business.util.ReadFile;
 import org.fisco.bcos.web3j.crypto.Credentials;
 import org.fisco.bcos.web3j.crypto.Keys;
 import org.fisco.bcos.web3j.protocol.Web3j;
@@ -25,60 +29,102 @@ import java.security.NoSuchProviderException;
 @Slf4j
 public class DeployServiceImpl implements DeployService {
 
-    private Web3j web3j;
+    private LicenseRepository licenseRepository;
 
     private UserRepository userRepository;
 
     private FiscoService fiscoService;
 
     @Autowired
-    DeployServiceImpl(Web3j web3j, UserRepository userRepository, FiscoService fiscoService) {
-        this.web3j = web3j;
+    DeployServiceImpl(LicenseRepository licenseRepository, UserRepository userRepository, FiscoService fiscoService) {
+        this.licenseRepository = licenseRepository;
         this.userRepository = userRepository;
         this.fiscoService = fiscoService;
     }
 
     @Override
-    public void deploy() throws Exception {
-        log.info(">>>>>>>>>deploy");
+    public void deployBAC001() throws Exception {
+        log.info(">>>>>>>>>deployBAC001");
 
-        BigInteger gasPrice = new BigInteger("1");
-        BigInteger gasLimit = new BigInteger("210000000");
-
-        ContractGasProvider contractGasProvider = new StaticGasProvider(gasPrice, gasLimit);
         Credentials credentials = Credentials.create("b83261efa42895c38c6c2364ca878f43e77f3cddbc922bf57d0d48070f79feb6");
 
         log.info("credentials address:{}", credentials.getAddress());
         log.info("credentials private key:{}", credentials.getEcKeyPair().getPrivateKey().toString(16));
         log.info("credentials public key:{}", credentials.getEcKeyPair().getPublicKey());
 
-        UserEntity userEntity = UserEntity.builder()
-                .role(0)
-                .privateKey(credentials.getEcKeyPair().getPrivateKey().toString(16))
-                .username("发行方")
-                .address(credentials.getAddress())
-                .phoneNumber("123456789")
-                .password("123456789")
-                .build();
-
-        userRepository.save(userEntity);
-
         String description = "fisco net car integration";
         String shortName = "integration";
         BigInteger minAmount = BigInteger.valueOf(1);
         BigInteger maxAmount = BigInteger.valueOf(500000000);
 
-        BAC001 bac001 = BAC001.deploy(web3j, credentials, contractGasProvider,
-                description, shortName, minAmount, maxAmount).send();
-        AddressConst.BAC001_CONTRACT_ADDRESS = bac001.getContractAddress();
-        BigInteger totalAmount = bac001.totalAmount().send().abs();
-        String contractAddress = bac001.getContractAddress();
+        PublisherInfoDTO publisherInfoDTO = fiscoService.deployBAC001(credentials, description, shortName, minAmount, maxAmount);
 
-        log.info("total amount is : {}", totalAmount);
-        log.info("发行方 address is : {}", credentials.getAddress());
-        log.info("发行方 公钥 is : {}", credentials.getEcKeyPair().getPublicKey());
-        log.info("发行方 私钥 is : {}", credentials.getEcKeyPair().getPrivateKey());
-        log.info("contract address is : {}", contractAddress);
+        UserEntity userEntity = UserEntity.builder()
+                .role(0)
+                .privateKey(publisherInfoDTO.getPrivateKey())
+                .username("发行方")
+                .address(publisherInfoDTO.getAddress())
+                .phoneNumber("123456789")
+                .password("123456789")
+                .build();
+
+        userRepository.save(userEntity);
+    }
+
+    @Override
+    public void deployBAC002() throws Exception {
+        log.info(">>>>>>>>>deployBAC002");
+
+        Credentials credentials = Credentials.create(Keys.createEcKeyPair());
+
+        log.info("credentials address:{}", credentials.getAddress());
+        log.info("credentials private key:{}", credentials.getEcKeyPair().getPrivateKey().toString(16));
+        log.info("credentials public key:{}", credentials.getEcKeyPair().getPublicKey());
+
+        String description = "fisco net car license";
+        String shortName = "license";
+
+        PublisherInfoDTO publisherInfoDTO = fiscoService.deployBAC002(credentials, description, shortName);
+
+        UserEntity userEntity = UserEntity.builder()
+                .role(0)
+                .privateKey(publisherInfoDTO.getPrivateKey())
+                .username("BAC002发行方")
+                .address(publisherInfoDTO.getAddress())
+                .phoneNumber("12345678910")
+                .password("12345678910")
+                .build();
+
+        userRepository.save(userEntity);
+    }
+
+    @Override
+    public void license2Chain(long userId) throws Exception {
+        log.info(">>>>>>>license2Chain");
+
+        UserEntity mallUserEntity = userRepository.findByPhoneNumber("12345678910");
+        Credentials credentials = Credentials.create(mallUserEntity.getPrivateKey());
+
+        String[] lines = ReadFile.toArrayByRandomAccessFile("classpath:车牌.txt");
+        log.info("Read from file:{}", (Object) lines);
+
+        UserEntity driverEntity = userRepository.findById(userId);
+        String addressTo = driverEntity.getAddress();
+
+        LicenseEntity licenseEntity;
+        for (String line: lines
+             ) {
+            licenseEntity = LicenseEntity.builder()
+                    .description(line)
+                    .build();
+            licenseEntity = licenseRepository.save(licenseEntity);
+
+            String data = "发行商给用户" + driverEntity.getUsername() + "一块车牌：" + line;
+            fiscoService.issueWithAssetURI(credentials, addressTo,
+                    BigInteger.valueOf(licenseEntity.getId()), licenseEntity.getDescription(), data);
+        }
+
+
     }
 
     @Override
