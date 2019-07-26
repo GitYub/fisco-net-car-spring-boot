@@ -17,6 +17,11 @@ public class BACTest extends BaseTest {
     private Web3j web3j;
 
     @Test
+    public void otherContract() {
+
+    }
+
+    @Test
     public void testBAC001() throws Exception {
 
         BigInteger gasPrice = new BigInteger("1");

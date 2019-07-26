@@ -45,6 +45,10 @@ public class DriverServiceImpl implements DriverService {
         log.info(">>>>>>>>finishOrder");
         DriverEntity driverEntity = driverRepository.findById(param.getDriverId());
         UserEntity driverUserEntity = userRepository.findById(driverEntity.getUserId());
+
+        log.info("driverEntity is : {}", driverEntity);
+        log.info("driverUserEntity is : {}", driverUserEntity);
+
         if (param.getIsSafeDrive() == 1) {
             driverEntity.setMiles(driverEntity.getMiles() + param.getMiles());
             driverRepository.save(driverEntity);
@@ -65,9 +69,14 @@ public class DriverServiceImpl implements DriverService {
                 default:break;
             }
 
+            log.info("platformEntity is : {}", platformEntity);
+
             if (platformEntity != null) {
                 Credentials platformCredentials = Credentials.create(platformEntity.getPrivateKey());
                 Credentials driverCredentials = Credentials.create(driverUserEntity.getPrivateKey());
+
+                log.info("司机：{}完成安全驾驶，获得里程：{}，积分：{}",
+                        platformEntity.getUsername(), driverEntity.getMiles(), driverEntity.getMiles());
 
                 fiscoService.send(platformCredentials, driverCredentials.getAddress(),
                         BigInteger.valueOf(param.getMiles()),
@@ -98,6 +107,9 @@ public class DriverServiceImpl implements DriverService {
         log.info("发行方地址：{}", mallCredentials.getAddress());
 
         fiscoService.send(driverCredentials, mallCredentials.getAddress(),
-                BigInteger.valueOf(point), "司机花费：" + point + "购买" +itemEntity.getItemName());
+                BigInteger.valueOf(point),
+                "司机:" + driverUserEntity.getUsername() + "花费：" + point + "购买" + itemEntity.getItemName());
+        log.info("司机：{}向发行方购买：{}，花费积分：{}",
+                driverUserEntity.getUsername(), itemEntity.getItemName(), point);
     }
 }
