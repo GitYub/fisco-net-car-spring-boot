@@ -70,7 +70,7 @@ public class DeployServiceImpl implements DeployService {
 
         BAC001 bac001 = BAC001.deploy(web3j, credentials, contractGasProvider,
                 description, shortName, minAmount, maxAmount).send();
-        AddressConst.CONTRACT_ADDRESS = bac001.getContractAddress();
+        AddressConst.BAC001_CONTRACT_ADDRESS = bac001.getContractAddress();
         BigInteger totalAmount = bac001.totalAmount().send().abs();
         String contractAddress = bac001.getContractAddress();
 

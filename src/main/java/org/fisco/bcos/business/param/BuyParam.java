@@ -14,4 +14,6 @@ public class BuyParam {
 
     long itemId;
 
+    int num;
+
 }

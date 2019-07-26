@@ -17,7 +17,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 
 @RestController
-@RequestMapping("/deploy")
+@RequestMapping("/api/deploy")
 @Slf4j
 public class DeployController {
 
@@ -60,7 +60,7 @@ public class DeployController {
         return JsonData.success("send success");
     }
 
-    @GetMapping("/balance")
+    @GetMapping("/point")
     public JsonData getBalance(long userId) throws Exception {
         log.info(">>>>>>>get {}'s balance", userId);
         return JsonData.success(deployService.getBalance(userId));

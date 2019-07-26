@@ -12,4 +12,7 @@ public interface FiscoService {
 
     String balance(Credentials credentials, String addressTo) throws Exception;
 
+    void issueWithAssetURI(Credentials credentials, String addressTo,
+                           BigInteger value, String description, String data) throws Exception;
+
 }

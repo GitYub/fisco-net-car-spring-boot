@@ -92,7 +92,7 @@ public class DriverServiceImpl implements DriverService {
         log.info(">>>>>>>>buyItem");
 
         ItemEntity itemEntity = itemRepository.findById(param.getItemId());
-        long point = itemEntity.getPoint();
+        long point = itemEntity.getPoint() * param.getNum();
 
         DriverEntity driverEntity = driverRepository.findById(param.getDriverId());
         UserEntity driverUserEntity = userRepository.findById(driverEntity.getUserId());
@@ -108,8 +108,9 @@ public class DriverServiceImpl implements DriverService {
 
         fiscoService.send(driverCredentials, mallCredentials.getAddress(),
                 BigInteger.valueOf(point),
-                "司机:" + driverUserEntity.getUsername() + "花费：" + point + "购买" + itemEntity.getItemName());
-        log.info("司机：{}向发行方购买：{}，花费积分：{}",
-                driverUserEntity.getUsername(), itemEntity.getItemName(), point);
+                "司机:" + driverUserEntity.getUsername() + "花费："
+                        + point + "购买" + itemEntity.getItemName() + "共" + param.getNum() + "件");
+        log.info("司机：{}向发行方购买：{} x {}件，花费积分：{}",
+                driverUserEntity.getUsername(), itemEntity.getItemName(), param.getNum(), point);
     }
 }
