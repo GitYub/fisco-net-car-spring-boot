@@ -1,13 +1,17 @@
 package org.fisco.bcos.business.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.fisco.bcos.business.dto.LoginDTO;
 import org.fisco.bcos.business.param.LoginParam;
 import org.fisco.bcos.business.param.RegisterParam;
 import org.fisco.bcos.business.service.UserService;
 import org.fisco.bcos.business.util.JsonData;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import static org.fisco.bcos.business.util.JsonData.success;
 
 @RestController
 @RequestMapping("/user")
@@ -23,16 +27,16 @@ public class UserController {
 
     @RequestMapping("/login")
     public JsonData login(LoginParam param) {
-        log.info(">>>>>>>login");
-        userService.login(param);
-        return JsonData.success();
+        log.info(">>>>>>>login, param:{}", param);
+        LoginDTO loginDTO = userService.login(param);
+        return JsonData.success(loginDTO);
     }
 
-    @RequestMapping("/register")
+    @PostMapping("/register")
     public JsonData register(RegisterParam param) {
-        log.info(">>>>>>>>>register");
+        log.info(">>>>>>>>>register, param:{}", param);
         userService.register(param);
-        return JsonData.success();
+        return success();
     }
 
 }

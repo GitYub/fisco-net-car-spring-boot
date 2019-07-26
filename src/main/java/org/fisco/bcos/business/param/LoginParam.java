@@ -10,6 +10,8 @@ import lombok.*;
 @Builder
 public class LoginParam {
 
-    private String username;
+    private String phoneNumber;
+
+    private String password;
 
 }
