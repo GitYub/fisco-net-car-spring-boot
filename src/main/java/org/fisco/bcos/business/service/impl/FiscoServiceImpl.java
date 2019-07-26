@@ -31,7 +31,12 @@ public class FiscoServiceImpl implements FiscoService {
         BAC001 bac001 = BAC001.load(AddressConst.CONTRACT_ADDRESS, web3j, credentials, getGasProvider());
         log.info("load successful");
 
-        bac001.send(addressTo, value, "send asset").send();
+        try {
+            bac001.send(addressTo, value, "send asset").send();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         log.info(">>>>>>send successful");
     }
 
