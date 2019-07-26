@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
         userEntity.setPhoneNumber(param.getPhoneNumber());  //是否做已存在校验？
         userEntity.setRole(2);  //0为商城，1为网约车平台，2为司机，默认为2
         try {
-            userEntity.setPrivateKey(Credentials.create(Keys.createEcKeyPair()).getEcKeyPair().getPrivateKey().toString());
+            userEntity.setPrivateKey(Credentials.create(Keys.createEcKeyPair()).getEcKeyPair().getPrivateKey().toString(16));
         } catch (Exception e) {
             throw  new ExistException("私钥创建失败");
         }
