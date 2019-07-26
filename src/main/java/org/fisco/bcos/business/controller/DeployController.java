@@ -6,10 +6,7 @@ import org.fisco.bcos.business.param.PlatformRegisterParam;
 import org.fisco.bcos.business.service.DeployService;
 import org.fisco.bcos.business.util.JsonData;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
@@ -60,8 +57,8 @@ public class DeployController {
         return JsonData.success("send success");
     }
 
-    @GetMapping("/point")
-    public JsonData getBalance(long userId) throws Exception {
+    @GetMapping("/point/{userId}")
+    public JsonData getBalance(@PathVariable("userId") long userId) throws Exception {
         log.info(">>>>>>>get {}'s balance", userId);
         return JsonData.success(deployService.getBalance(userId));
     }
