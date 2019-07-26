@@ -71,8 +71,5 @@ public class DriverServiceImpl implements DriverService {
         }
     }
 
-    @Override
-    public void buyItem() {
 
-    }
 }

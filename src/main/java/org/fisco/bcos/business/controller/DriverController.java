@@ -1,6 +1,7 @@
 package org.fisco.bcos.business.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.fisco.bcos.business.param.BuyParam;
 import org.fisco.bcos.business.param.DriverParam;
 import org.fisco.bcos.business.service.DriverService;
 import org.fisco.bcos.business.util.JsonData;
@@ -31,10 +32,10 @@ public class DriverController {
     }
 
     @PostMapping("/item")
-    public JsonData buyItem() {
+    public JsonData buyItem(BuyParam param) {
         log.info(">>>>>>buy item");
 
-
+      //  driverService.buyItem();
         return JsonData.success();
     }
 
