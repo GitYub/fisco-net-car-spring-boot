@@ -90,7 +90,12 @@ public class DeployServiceImpl implements DeployService {
         Credentials platformCredentials = Credentials.create(platformUserEntity.getPrivateKey());
 
         log.info("mallUserEntity's address is : {}", mallCredentials.getAddress());
+        log.info("mallUserEntity's public key is : {}", mallCredentials.getEcKeyPair().getPublicKey());
+        log.info("mallUserEntity's private key is : {}", mallCredentials.getEcKeyPair().getPrivateKey());
+
         log.info("platformUserEntity's address is : {}", platformCredentials.getAddress());
+        log.info("platformUserEntity's public key is : {}", platformCredentials.getEcKeyPair().getPublicKey());
+        log.info("platformUserEntity's private key : {}", platformCredentials.getEcKeyPair().getPrivateKey());
 
         fiscoService.send(mallCredentials, platformCredentials.getAddress(), point,
                 "商城向平台" + platformUserEntity.getUsername() + "转账" + point.toString() + "积分");
