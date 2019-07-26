@@ -26,7 +26,7 @@ public class DriverEntity {
     private long userId;
 
     @Column
-    private long platform;
+    private int platform;
 
     @Column
     private int star;

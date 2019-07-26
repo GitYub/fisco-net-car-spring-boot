@@ -7,4 +7,8 @@ public interface UserRepository extends CrudRepository<UserEntity, String> {
 
     UserEntity findByPhoneNumber(String phoneNumber);
 
+    UserEntity findById(long id);
+
+    UserEntity findByUsername(String username);
+
 }
