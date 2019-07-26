@@ -6,7 +6,6 @@ import org.fisco.bcos.business.param.DriverParam;
 import org.fisco.bcos.business.service.DriverService;
 import org.fisco.bcos.business.util.JsonData;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,10 +31,10 @@ public class DriverController {
     }
 
     @PostMapping("/item")
-    public JsonData buyItem(BuyParam param) {
+    public JsonData buyItem(BuyParam param) throws Exception {
         log.info(">>>>>>buy item");
 
-      //  driverService.buyItem();
+        driverService.buyItem(param);
         return JsonData.success();
     }
 

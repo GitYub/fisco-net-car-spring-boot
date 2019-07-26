@@ -15,4 +15,6 @@ public interface DeployService {
 
     void mallSend2Platform(long userId, BigInteger point) throws Exception;
 
+    String getBalance(long userId) throws Exception;
+
 }

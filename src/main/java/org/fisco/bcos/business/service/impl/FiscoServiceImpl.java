@@ -39,7 +39,7 @@ public class FiscoServiceImpl implements FiscoService {
         log.info("privatekey :{}", credentials.getEcKeyPair().getPrivateKey().toString(16));
         log.info("valid: {} ", bac001.isValid());
         try {
-            bac001.send(addressTo, value, "send asset").send();
+            bac001.send(addressTo, value, data).send();
         } catch (Exception e) {
             e.printStackTrace();
         }

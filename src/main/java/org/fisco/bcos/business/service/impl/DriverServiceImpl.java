@@ -2,9 +2,12 @@ package org.fisco.bcos.business.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.fisco.bcos.business.entity.DriverEntity;
+import org.fisco.bcos.business.entity.ItemEntity;
 import org.fisco.bcos.business.entity.UserEntity;
+import org.fisco.bcos.business.param.BuyParam;
 import org.fisco.bcos.business.param.DriverParam;
 import org.fisco.bcos.business.repository.DriverRepository;
+import org.fisco.bcos.business.repository.ItemRepository;
 import org.fisco.bcos.business.repository.UserRepository;
 import org.fisco.bcos.business.service.DriverService;
 import org.fisco.bcos.business.service.FiscoService;
@@ -24,13 +27,17 @@ public class DriverServiceImpl implements DriverService {
 
     private FiscoService fiscoService;
 
+    private ItemRepository itemRepository;
+
     @Autowired
     DriverServiceImpl(DriverRepository driverRepository,
                       FiscoService fiscoService,
-                      UserRepository userRepository) {
+                      UserRepository userRepository,
+                      ItemRepository itemRepository) {
         this.driverRepository = driverRepository;
         this.fiscoService = fiscoService;
         this.userRepository = userRepository;
+        this.itemRepository = itemRepository;
     }
 
     @Override
@@ -71,5 +78,26 @@ public class DriverServiceImpl implements DriverService {
         }
     }
 
+    @Override
+    public void buyItem(BuyParam param) throws Exception {
+        log.info(">>>>>>>>buyItem");
 
+        ItemEntity itemEntity = itemRepository.findById(param.getItemId());
+        long point = itemEntity.getPoint();
+
+        DriverEntity driverEntity = driverRepository.findById(param.getDriverId());
+        UserEntity driverUserEntity = userRepository.findById(driverEntity.getUserId());
+
+        UserEntity mallUserEntity = userRepository.findByPhoneNumber("123456789");
+        UserEntity platformUserEntity = userRepository.findById(mallUserEntity.getId());
+
+        Credentials driverCredentials = Credentials.create(driverUserEntity.getPrivateKey());
+        Credentials mallCredentials = Credentials.create(platformUserEntity.getPrivateKey());
+
+        log.info("司机地址：{}", driverCredentials.getAddress());
+        log.info("发行方地址：{}", mallCredentials.getAddress());
+
+        fiscoService.send(driverCredentials, mallCredentials.getAddress(),
+                BigInteger.valueOf(point), "司机花费：" + point + "购买" +itemEntity.getItemName());
+    }
 }

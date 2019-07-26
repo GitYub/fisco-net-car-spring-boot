@@ -5,6 +5,6 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface ItemRepository extends CrudRepository<ItemEntity, Long> {
 
-
+    ItemEntity findById(long id);
 
 }

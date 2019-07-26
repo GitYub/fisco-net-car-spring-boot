@@ -57,7 +57,13 @@ public class DeployController {
         log.info(">>>>>>>mallSend2Platform: {}", param);
 
         deployService.mallSend2Platform(param.getUserId(), BigInteger.valueOf(param.getPoint()));
-        return JsonData.success("register platform success");
+        return JsonData.success("send success");
+    }
+
+    @GetMapping("/balance")
+    public JsonData getBalance(long userId) throws Exception {
+        log.info(">>>>>>>get {}'s balance", userId);
+        return JsonData.success(deployService.getBalance(userId));
     }
 
 }

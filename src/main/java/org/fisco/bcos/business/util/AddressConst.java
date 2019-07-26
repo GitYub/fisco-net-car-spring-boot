@@ -7,6 +7,6 @@ package org.fisco.bcos.business.util;
 
 public class AddressConst {
 
-    public static String CONTRACT_ADDRESS = "0x2426edaa1173f65cd7d62c93c935bfde329d247c";
+    public static String CONTRACT_ADDRESS = "0xf9343346a8d80c3d2f2026bf72fff3aec48a4133";
 
 }
