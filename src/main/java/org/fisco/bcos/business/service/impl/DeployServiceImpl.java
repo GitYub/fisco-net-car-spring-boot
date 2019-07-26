@@ -83,6 +83,9 @@ public class DeployServiceImpl implements DeployService {
         UserEntity mallUserEntity = userRepository.findByPhoneNumber("123456789");
         UserEntity platformUserEntity = userRepository.findById(userId);
 
+        log.info("mallUserEntity is : {}", mallUserEntity);
+        log.info("platformUserEntity is : {}", platformUserEntity);
+
         Credentials mallCredentials = Credentials.create(mallUserEntity.getPrivateKey());
         Credentials platformCredentials = Credentials.create(platformUserEntity.getPrivateKey());
 

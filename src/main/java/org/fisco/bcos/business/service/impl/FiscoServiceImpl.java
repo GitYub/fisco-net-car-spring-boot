@@ -30,6 +30,7 @@ public class FiscoServiceImpl implements FiscoService {
 
         BAC001 bac001 = BAC001.load(AddressConst.CONTRACT_ADDRESS, web3j, credentials, getGasProvider());
         bac001.send(addressTo, value, "send asset").send();
+        log.info(">>>>>>send successful");
     }
 
     @Override
@@ -45,6 +46,7 @@ public class FiscoServiceImpl implements FiscoService {
         log.info(">>>>>>balance");
 
         BAC001 bac001 = BAC001.load(AddressConst.CONTRACT_ADDRESS, web3j, credentials, getGasProvider());
+        log.info(">>>>>>balance successful");
         return bac001.balance(addressTo).send().toString();
     }
 
