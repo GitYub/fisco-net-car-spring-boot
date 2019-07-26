@@ -7,7 +7,6 @@ import org.fisco.bcos.business.param.PlatformRegisterParam;
 import org.fisco.bcos.business.repository.UserRepository;
 import org.fisco.bcos.business.service.DeployService;
 import org.fisco.bcos.business.service.FiscoService;
-import org.fisco.bcos.business.service.UserService;
 import org.fisco.bcos.business.util.AddressConst;
 import org.fisco.bcos.web3j.crypto.Credentials;
 import org.fisco.bcos.web3j.crypto.Keys;
@@ -57,6 +56,7 @@ public class DeployServiceImpl implements DeployService {
                 .role(0)
                 .privateKey(credentials.getEcKeyPair().getPrivateKey().toString(16))
                 .username("发行方")
+                .address(credentials.getAddress())
                 .phoneNumber("123456789")
                 .password("123456789")
                 .build();
@@ -95,16 +95,12 @@ public class DeployServiceImpl implements DeployService {
         Credentials platformCredentials = Credentials.create(platformUserEntity.getPrivateKey());
 
         log.info("mallUserEntity's address is : {}", mallCredentials.getAddress());
-        log.info("mallUserEntity's public 10 key is : {}", mallCredentials.getEcKeyPair().getPublicKey());
-        log.info("mallUserEntity's public 16 key is : {}", mallCredentials.getEcKeyPair().getPublicKey().toString(16));
-        log.info("mallUserEntity's private 10 key is : {}", mallCredentials.getEcKeyPair().getPrivateKey());
-        log.info("mallUserEntity's private 16 key is : {}", mallCredentials.getEcKeyPair().getPrivateKey().toString(16));
+        log.info("mallUserEntity's public key is : {}", mallCredentials.getEcKeyPair().getPublicKey());
+        log.info("mallUserEntity's private key is : {}", mallCredentials.getEcKeyPair().getPrivateKey());
 
         log.info("platformUserEntity's address is : {}", platformCredentials.getAddress());
-        log.info("platformUserEntity's public 10 key is : {}", platformCredentials.getEcKeyPair().getPublicKey());
-        log.info("platformUserEntity's public 16 key is : {}", platformCredentials.getEcKeyPair().getPublicKey().toString(16));
-        log.info("platformUserEntity's private 10 key : {}", platformCredentials.getEcKeyPair().getPrivateKey());
-        log.info("platformUserEntity's private 16 key : {}", platformCredentials.getEcKeyPair().getPrivateKey().toString(16));
+        log.info("platformUserEntity's public key is : {}", platformCredentials.getEcKeyPair().getPublicKey());
+        log.info("platformUserEntity's private key : {}", platformCredentials.getEcKeyPair().getPrivateKey());
 
         fiscoService.send(mallCredentials, platformCredentials.getAddress(), point,
                 "商城向平台" + platformUserEntity.getUsername() + "转账" + point.toString() + "积分");
@@ -120,7 +116,8 @@ public class DeployServiceImpl implements DeployService {
                 .password(param.getPassword())
                 .phoneNumber(param.getPhoneNumber())
                 .username(param.getUsername())
-                .privateKey(credentials.getEcKeyPair().getPrivateKey().toString(10))
+                .address(credentials.getAddress())
+                .privateKey(credentials.getEcKeyPair().getPrivateKey().toString(16))
                 .role(1)
                 .build();
 
@@ -128,5 +125,15 @@ public class DeployServiceImpl implements DeployService {
         log.info("注册平台:{}的私钥：{}", param.getUsername(), credentials.getEcKeyPair().getPrivateKey());
         log.info("注册平台:{}的地址：{}", param.getUsername(), credentials.getAddress());
         userRepository.save(userEntity);
+    }
+
+    @Override
+    public String getBalance(long userId) throws Exception {
+        log.info(">>>>>>>getBalance");
+        UserEntity userEntity = userRepository.findById(userId);
+        Credentials credentials = Credentials.create(userEntity.getPrivateKey());
+        String balance = fiscoService.balance(credentials, credentials.getAddress());
+        log.info(">>>>>>>getBalance result is ：{}", balance);
+        return balance;
     }
 }

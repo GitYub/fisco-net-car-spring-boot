@@ -33,4 +33,7 @@ public class UserEntity {
     @Column
     private int role;
 
+    @Column
+    private String address;
+
 }
