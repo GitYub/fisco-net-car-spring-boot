@@ -156,4 +156,28 @@ public class DriverServiceImpl implements DriverService {
         }
 
     }
+
+    @Override
+    public void resetPoint(long driverId, long point) throws Exception {
+        log.info(">>>>>>>>resetPoint, driverId is :{}", driverId);
+
+        DriverEntity driverEntity = driverRepository.findById(driverId);
+        UserEntity driverUserEntity = userRepository.findById(driverEntity.getUserId());
+
+        log.info("DriverEntity is :{}", driverEntity);
+
+        UserEntity mallUserEntity = userRepository.findByPhoneNumber("123456789");
+        UserEntity platformUserEntity = userRepository.findById(mallUserEntity.getId());
+
+        Credentials driverCredentials = Credentials.create(driverUserEntity.getPrivateKey());
+        Credentials mallCredentials = Credentials.create(platformUserEntity.getPrivateKey());
+
+        log.info("司机地址：{}", driverCredentials.getAddress());
+        log.info("发行方地址：{}", mallCredentials.getAddress());
+
+        fiscoService.send(driverCredentials, mallCredentials.getAddress(),
+                BigInteger.valueOf(point),
+                "司机:" + driverUserEntity.getUsername() + "积分清零");
+
+    }
 }

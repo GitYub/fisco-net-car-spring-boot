@@ -6,6 +6,7 @@ import org.fisco.bcos.business.param.DriverParam;
 import org.fisco.bcos.business.service.DriverService;
 import org.fisco.bcos.business.util.JsonData;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,6 +44,14 @@ public class DriverController {
         log.info(">>>>>>buy item");
 
         driverService.buyItem(param);
+        return JsonData.success();
+    }
+
+    @DeleteMapping("/point")
+    public JsonData resetPoint(long driverId, long point) throws Exception {
+        log.info(">>>>>>resetPoint :{}", driverId);
+
+        driverService.resetPoint(driverId, point);
         return JsonData.success();
     }
 

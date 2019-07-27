@@ -11,4 +11,6 @@ public interface DriverService {
 
     void review(long userId) throws Exception;
 
+    void resetPoint(long driverId, long point) throws Exception;
+
 }
