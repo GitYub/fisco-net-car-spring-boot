@@ -117,4 +117,43 @@ public class DriverServiceImpl implements DriverService {
         log.info("司机：{}向发行方购买：{} x {}件，花费积分：{}",
                 driverUserEntity.getUsername(), itemEntity.getItemName(), param.getNum(), point);
     }
+
+    @Override
+    public void review(long driverId) throws Exception {
+        DriverEntity driverEntity = driverRepository.findById(driverId);
+        UserEntity driverUserEntity = userRepository.findById(driverEntity.getUserId());
+
+        log.info("driverUserEntity is : {}", driverUserEntity);
+
+        int platform = driverEntity.getPlatform();
+        UserEntity platformEntity = null;
+
+        switch (platform) {
+            case 0:
+                platformEntity = userRepository.findByUsername("滴滴");
+                break;
+            case 1:
+                platformEntity = userRepository.findByUsername("美团");
+                break;
+            case 2:
+                platformEntity = userRepository.findByUsername("神州");
+                break;
+            default:break;
+        }
+
+        log.info("platformEntity is : {}", platformEntity);
+
+        if (platformEntity != null) {
+            Credentials platformCredentials = Credentials.create(platformEntity.getPrivateKey());
+            Credentials driverCredentials = Credentials.create(driverUserEntity.getPrivateKey());
+
+            log.info("司机：{}审核通过，获得积分：500", platformEntity.getUsername());
+
+            fiscoService.send(platformCredentials, driverCredentials.getAddress(),
+                    BigInteger.valueOf(500),
+                    "平台：" + platformEntity.getUsername() + "向司机：" + driverUserEntity.getUsername()
+                            + "转账：500");
+        }
+
+    }
 }

@@ -9,4 +9,6 @@ public interface DriverService {
 
     void buyItem(BuyParam param) throws Exception;
 
+    void review(long userId) throws Exception;
+
 }

@@ -30,6 +30,14 @@ public class DriverController {
         return JsonData.success();
     }
 
+    @PostMapping("/review")
+    public JsonData review(long driverId) throws Exception {
+        log.info(">>>>>>review");
+
+        driverService.review(driverId);
+        return JsonData.success();
+    }
+
     @PostMapping("/item")
     public JsonData buyItem(BuyParam param) throws Exception {
         log.info(">>>>>>buy item");

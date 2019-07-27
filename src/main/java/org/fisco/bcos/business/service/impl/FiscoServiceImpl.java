@@ -137,4 +137,8 @@ public class FiscoServiceImpl implements FiscoService {
         BigInteger gasLimit = new BigInteger("210000000");
         return new StaticGasProvider(gasPrice, gasLimit);
     }
+
+    public void test() {
+
+    }
 }

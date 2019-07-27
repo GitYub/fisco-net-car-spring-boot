@@ -1,6 +1,8 @@
 package org.fisco.bcos;
 
 import lombok.extern.slf4j.Slf4j;
+import org.fisco.bcos.business.entity.UserEntity;
+import org.fisco.bcos.business.repository.UserRepository;
 import org.fisco.bcos.business.service.DeployService;
 import org.fisco.bcos.business.service.FiscoService;
 import org.fisco.bcos.business.util.AddressConst;
@@ -24,14 +26,15 @@ public class BACTest extends BaseTest {
     private FiscoService fiscoService;
 
     @Autowired
-    private DeployService deployService;
+    private UserRepository userRepository;
 
     @Test
-    public void testBAC002Send() {
-        String[] a = ReadFile.toArrayByRandomAccessFile("classpath:车牌.txt");
-        for (String b : a) {
-            System.out.println(b);
-        }
+    public void testBAC002Send() throws Exception {
+
+        UserEntity mallUserEntity = userRepository.findByPhoneNumber("12345678910");
+        Credentials credentials = Credentials.create(mallUserEntity.getPrivateKey());
+        String addressTo = "0x148947262ec5e21739fe3a931c29e8b84ee34a0f";
+        System.out.println(fiscoService.balance(credentials, addressTo));
     }
 
     @Test

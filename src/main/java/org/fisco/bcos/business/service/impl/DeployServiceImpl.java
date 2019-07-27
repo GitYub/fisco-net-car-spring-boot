@@ -1,7 +1,6 @@
 package org.fisco.bcos.business.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.fisco.bcos.BAC001;
 import org.fisco.bcos.business.dto.PublisherInfoDTO;
 import org.fisco.bcos.business.entity.LicenseEntity;
 import org.fisco.bcos.business.entity.UserEntity;
@@ -10,13 +9,9 @@ import org.fisco.bcos.business.repository.LicenseRepository;
 import org.fisco.bcos.business.repository.UserRepository;
 import org.fisco.bcos.business.service.DeployService;
 import org.fisco.bcos.business.service.FiscoService;
-import org.fisco.bcos.business.util.AddressConst;
 import org.fisco.bcos.business.util.ReadFile;
 import org.fisco.bcos.web3j.crypto.Credentials;
 import org.fisco.bcos.web3j.crypto.Keys;
-import org.fisco.bcos.web3j.protocol.Web3j;
-import org.fisco.bcos.web3j.tx.gas.ContractGasProvider;
-import org.fisco.bcos.web3j.tx.gas.StaticGasProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -119,7 +114,7 @@ public class DeployServiceImpl implements DeployService {
                     .build();
             licenseEntity = licenseRepository.save(licenseEntity);
 
-            String data = "发行商给用户" + driverEntity.getUsername() + "一块车牌：" + line;
+            String data = "issuer give " + driverEntity.getUsername() + " a car license：" + line;
             fiscoService.issueWithAssetURI(credentials, addressTo,
                     BigInteger.valueOf(licenseEntity.getId()), licenseEntity.getDescription(), data);
         }
