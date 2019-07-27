@@ -89,13 +89,17 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public void buyItem(BuyParam param) throws Exception {
-        log.info(">>>>>>>>buyItem");
+        log.info(">>>>>>>>buyItem, param is :{}", param);
 
         ItemEntity itemEntity = itemRepository.findById(param.getItemId());
         long point = itemEntity.getPoint() * param.getNum();
 
+        log.info("ItemEntity is :{}", itemEntity);
+
         DriverEntity driverEntity = driverRepository.findById(param.getDriverId());
         UserEntity driverUserEntity = userRepository.findById(driverEntity.getUserId());
+
+        log.info("DriverEntity is :{}", driverEntity);
 
         UserEntity mallUserEntity = userRepository.findByPhoneNumber("123456789");
         UserEntity platformUserEntity = userRepository.findById(mallUserEntity.getId());
